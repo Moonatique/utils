@@ -3,14 +3,14 @@ defmodule Utils do
     File.ls!
       |> Enum.filter(&File.regular?/1)
       |> Enum.with_index
-      |> Enum.each(
-        fn {fileName, idx} ->
-          ext = fileName
-            |> String.replace(~r/^.*\./, "")
+      |> Enum.each(&rename_with_index &1, newFileName)
+  end
 
-          File.rename "#{fileName}", "#{newFileName}-#{idx + 1}.#{ext}"
-        end
-      )
+  defp rename_with_index({fileName, idx}, newFileName) do
+    ext = fileName
+      |> String.replace(~r/^.*\./, "")
+
+    File.rename "#{fileName}", "#{newFileName}-#{idx + 1}.#{ext}"
   end
 end
 
@@ -23,4 +23,4 @@ Utils.fastFileRenamer(newFileName)
 IO.puts "\nFiles have been weel renamed.\n"
 File.ls!
   |> Enum.filter(&File.regular?/1)
-  |> Enum.map(&IO.puts &1)
+  |> Enum.map(&IO.puts/1)
